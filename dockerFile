@@ -21,7 +21,6 @@ Setup = /usr/lib/x86_64-linux-gnu/odbc/libtdsS.so" >> /etc/odbcinst.ini
 
 # set working directory
 WORKDIR /usr/src/app
-ADD requirements.txt .
 
 # install dependencies
 RUN pip install -r requirements.txt
