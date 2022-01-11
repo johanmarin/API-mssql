@@ -11,7 +11,7 @@ def get_config() -> dict:
     Returns:
         dict: Configuración para conectarse al servido de bases de datos de 
     """    
-    path = './config.yaml'  
+    path = '/config.yaml'  
     f = open(os.getcwd().replace('\\', '/')+path)
     config = yaml.load(f, Loader=yaml.FullLoader)
     f.close()
