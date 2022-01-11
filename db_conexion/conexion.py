@@ -40,13 +40,17 @@ class VisualQuery:
     def connect(self):
         
         try:
-            self.cnxn = pyodbc.connect('Driver={'+self.driver+'};'
-                                    'SERVER='+self._server+';'
+            print('conexión data: Driver={' + self.driver + '};''SERVER=' + self._server + ';'
                                     'DATABASE='+self._database+';'
-                                    'UID='+ self._username +';PWD=' + self._password)
+                                    'UID=' + self._username + ';PWD=' + self._password)
+            self.cnxn = pyodbc.connect('Driver={' + self.driver + '};'
+                                    'SERVER=' + self._server + ';'
+                                    'DATABASE='+self._database+';'
+                                    'UID=' + self._username + ';PWD=' + self._password)
             
             print('conexion exitosa con %s' % self._database)     
         except:
+            self.cnxn = False
             print('No ha sido posible conectarse con %s' % self._database)
     
     def update_table(self):
