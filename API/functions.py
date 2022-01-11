@@ -17,7 +17,7 @@ def get_config() -> dict:
     f.close()
     return config
 
-def get_data(sql_query: str) -> pd.DataFrame:
+def run_query(sql_query: str) -> pd.DataFrame:
     """Esta función recibe una query SQL en formato string y devuelve la consulta en formato dataframe
 
     Args:
@@ -46,6 +46,37 @@ def get_data(sql_query: str) -> pd.DataFrame:
         print('Guardando los datos en un dataframes')
         df = qry.get_data()
         qry.close_conexion()
-        print('Cerrando conexión')    
-        js = simplejson.dumps(df.to_dict(), ignore_nan=True)
-        return json.loads(js)
+        print('Cerrando conexión')
+        return df
+    
+def get_data(sql_query: str) -> dict:
+    """Esta función recibe una query SQL en formato string y devuelve la consulta en formato dicionario, eliminando los valores 
+
+    Args:
+        sql_query (str): Consulta sql en formato string
+
+    Returns:
+        dict: diccionario de lso datos
+    """    
+    df = run_query(sql_query)        
+    # Convirtiendo fechas en datos legibles
+    for col in df.columns:
+        if type(df[col][0]) in [pd._libs.tslibs.timestamps.Timestamp, pd._libs.tslibs.nattype.NaTType]:
+            df[col] = df[col].apply(lambda x: x.isoformat())
+    return json.loads(simplejson.dumps(df.to_dict(), ignore_nan=True))
+
+def get_file(sql_query: str, file_path: str):
+    """Esta fucnión obtiene los datos de una consulta y los pone en un archivo csv
+
+    Args:
+        sql_query (str): query que permite obteern los datos desde la base de datos
+        file_path (str): ruta del archivo donde se guardan los datos como csv
+    """    
+    
+    if os.path.exists(file_path):
+        os.remove(file_path)
+    
+    df = run_query(sql_query) # Extrallendo los datos
+    df.to_csv(file_path, index=False)
+    
+    
