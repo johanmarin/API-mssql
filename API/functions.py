@@ -58,12 +58,17 @@ def get_data(sql_query: str) -> dict:
     Returns:
         dict: diccionario de lso datos
     """    
-    df = run_query(sql_query)        
-    # Convirtiendo fechas en datos legibles
-    for col in df.columns:
-        if type(df[col][0]) in [pd._libs.tslibs.timestamps.Timestamp, pd._libs.tslibs.nattype.NaTType]:
-            df[col] = df[col].apply(lambda x: x.isoformat())
-    return json.loads(simplejson.dumps(df.to_dict(), ignore_nan=True))
+    df = run_query(sql_query) 
+    
+    if type(df) == dict:
+        return df
+
+    else:
+        # Convirtiendo fechas en datos legibles
+        for col in df.columns:
+            if type(df[col][0]) in [pd._libs.tslibs.timestamps.Timestamp, pd._libs.tslibs.nattype.NaTType]:
+                df[col] = df[col].apply(lambda x: x.isoformat())
+        return json.loads(simplejson.dumps(df.to_dict(), ignore_nan=True))
 
 def get_file(sql_query: str, file_path: str):
     """Esta fucnión obtiene los datos de una consulta y los pone en un archivo csv
@@ -75,8 +80,11 @@ def get_file(sql_query: str, file_path: str):
     
     if os.path.exists(file_path):
         os.remove(file_path)
-    
+
     df = run_query(sql_query) # Extrallendo los datos
-    df.to_csv(file_path, index=False)
     
-    
+    if type(df) == dict:
+        return df
+    else:
+        df.to_csv(file_path, index=False)
+        return {'Confirmación':'Se hen extraido los datos correctamente'}

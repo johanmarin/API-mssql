@@ -17,7 +17,6 @@ Setup = /usr/lib/x86_64-linux-gnu/odbc/libtdsS.so" >> /etc/odbcinst.ini
 
 RUN pip install --upgrade pip
 
-
 COPY . usr/src/app
 WORKDIR /usr/src/app
 RUN pip install -r requirements.txt
