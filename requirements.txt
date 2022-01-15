@@ -4,6 +4,7 @@ pyodbc==4.0.32
 pyyaml==6.0
 simplejson==3.17.6
 
+pydantic==1.9.0
 asgiref==3.4.1
 certifi==2021.5.30
 click==8.0.1
