@@ -87,4 +87,4 @@ def get_file(sql_query: str, file_path: str):
         return df
     else:
         df.to_csv(file_path, index=False)
-        return {'Confirmación':'Se hen extraido los datos correctamente'}
+        return {'Confirmación':'Se han extraido los datos correctamente'}
