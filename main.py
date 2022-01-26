@@ -1,15 +1,25 @@
 import os
+import yaml
 from fastapi import FastAPI
 from pydantic import BaseModel
 from datetime import datetime
 import API.functions as f_api
 from starlette.responses import FileResponse
 
+# Load config
+f = open(os.getcwd().replace('\\', '/') + '/config.yaml' )
+config = yaml.load(f, Loader=yaml.FullLoader)
+f.close()
+
+# Conexion
+visual_conn = f_api.connect(config)
+
 # Query model
 class Query(BaseModel):
     source: str
     sql_query: str
     date: datetime = datetime.now()
+    
     
 app = FastAPI()
 
@@ -20,22 +30,22 @@ def read_root():
 
 # Get query like json
 @app.get('/prueba')
-def get_query(query: Query):
-    sql_query = 'SELECT TOP(10) * FROM dbo.creCreditos;' # Query de prueba
-    df = f_api.get_data(sql_query)
+def get_query_prueba():
+    df = f_api.get_data(visual_conn, config['query_prueba'], config)
     return df
 
 # Get query like json
 @app.get('/query')
 def get_query(query: Query):
-    df = f_api.get_data(query.sql_query)
+    df = f_api.get_data(visual_conn, query.sql_query, config)
+    print(df)
     return df
 
 # Get query like csv
 @app.get('/csv')
 def get_csv(query: Query):
     file_path = os.getcwd() + '/files/data.csv'
-    resp = f_api.get_file(query.sql_query, file_path)
+    resp = f_api.get_file(visual_conn, query.sql_query, config, file_path)
     if 'Error' in resp:
         return resp
     else:

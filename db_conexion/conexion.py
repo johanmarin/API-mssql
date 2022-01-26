@@ -9,6 +9,7 @@ class VisualQuery:
     Args:
         server (str): Direccion IP del servidor
         database (str): Nombre de la base de datos
+        port: puerto de conexión con la base de datos
         username (str): Nombre de usuario
         password (str): Contraseña para la base de datos
         query (str): Código para realizar la consulta
@@ -24,15 +25,18 @@ class VisualQuery:
         get_data: Devuelve lso datos contenidos en el atributo data
     
     """ 
-    def __init__(self, driver: str, server: str, database: str, username:str, password: str, sql_query: str):
+    def __init__(self, driver: str, server: str, database: str, port: str,username:str, password: str, sql_query: str):
         
+        
+        self.driver = driver
         self._server = server
         self._database = database
+        self.port = port
         self._username = username
         self._password = password
         self.sql_query = sql_query
+        self.string_conexion = 'DRIVER={'+driver+'};SERVER='+server+';PORT='+port+';DATABASE='+database+';UID='+username+';PWD='+password
         self.data = pd.DataFrame()
-        self.driver = driver
         
     def get_query(self):
         return self.sql_query
@@ -40,13 +44,8 @@ class VisualQuery:
     def connect(self):
         
         try:
-            print('conexión data: Driver={' + self.driver + '};''SERVER=' + self._server + ';'
-                                    'DATABASE='+self._database+';'
-                                    'UID=' + self._username + ';PWD=' + self._password)
-            self.cnxn = pyodbc.connect('Driver={' + self.driver + '};'
-                                    'SERVER=' + self._server + ';'
-                                    'DATABASE='+self._database+';'
-                                    'UID=' + self._username + ';PWD=' + self._password)
+            print('String de conexión: %s' %self.string_conexion)
+            self.cnxn =  pyodbc.connect(self.string_conexion, autocommit=True)
             
             print('conexion exitosa con %s' % self._database)     
         except:
