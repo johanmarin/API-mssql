@@ -7,11 +7,14 @@ import API.functions as f_api
 from starlette.responses import FileResponse
 
 # Load config
-f = open(os.getcwd().replace('\\', '/') + '/config.yaml' )
-config = yaml.load(f, Loader=yaml.FullLoader)
-f.close()
+def load_config():    
+    f = open(os.getcwd().replace('\\', '/') + '/config.yaml' )
+    config = yaml.load(f, Loader=yaml.FullLoader)
+    f.close()
+    return config
 
 # Conexion
+config = load_config()
 visual_conn = f_api.connect(config)
 
 # Query model
