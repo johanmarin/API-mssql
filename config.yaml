@@ -1,0 +1,7 @@
+driver: FreeTDS
+server: 'serverIP'
+port: '1433'
+database: dbNAME
+username: sa
+password: sa
+query_prueba: SELECT * FROM table;
